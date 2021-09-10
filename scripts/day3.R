@@ -141,42 +141,5 @@ glm(cbind(infant.mortality, 1000 - infant.mortality) ~ gdp,
     data = gdp, family = binomial)
 
 
-###Assignment
-
-gdp<-read.csv("datasets/UN_GDP_infantmortality.csv")
-
-gdp_model <- glm(infant.mortality ~ gdp,
-                 data = gdp,
-                 family = poisson)
-summary(gdp_model)
-allEffects(gdp_model)
-#equatiomatic::extract_eq(gdp_model)
-
-library(parameters)
-plot(simulate_parameters(gdp_model)) +
-  geom_vline(xintercept = 0) +
-  ggtitle("Effect of GDP on mortality")
-
-plot(allEffects(gdp_model))
-
-plot(gdp_model)
-
-simulateResiduals(gdp_model, plot = TRUE)
-
-simres <- simulateResiduals(gdp_model, refit = TRUE)
-testDispersion(simres)
 
 
-
-gdp_model_quasi<-glm(formula = infant.mortality ~ gdp,
-                     data = gdp,
-                     family = quasipoisson)
-
-
-#Accounting for overdispersion using negative binomial
-library(MASS)
-
-gdp_model_nb <- glm.nb(infant.mortality ~ gdp, data = gdp)
-
-compare_models(gdp_model_nb, gdp_model_quasi, gdp_model)
-compare_performance(gdp_model_nb, gdp_model_quasi, gdp_model)
